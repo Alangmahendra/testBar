@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous">
+    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <title>Document</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="bower_components/chartist/dist/chartist.min.css">
+
+
+</head>
+
+<body>
+
+  <div class="container">
+    <div class="line-chart"></div>
+  </div>
+  <script src="bower_components/chartist/dist/chartist.min.js"></script>
+  <script>
+    new Chartist.Line('.line-chart', {
+      labels: ['jan-17', 'feb-17', 'mar-17', 'apr-17', 'mei-17', 'jun-17', 'jul-17', 'aug-17', 'sep-17', 'okt-17', 'nov-17', 'des-17', 'jan-18'],
+      series: [
+        [60, 90, 70, 88, 56, 100, 54, 45, 89, 69, 75, 10, 83],
+        [60, 90, 300, 88, 56, 300, 54, 45, 89, 69, 75, 10, 83]
+      ]
+    }, {
+        // type: Chartist.FixedScaleAxis,
+        // ticks: [0, 400, 600, 1000],
+        fullWidth: true,
+        showArea: true,
+        axisX: {
+          // type: Chartist.StepAxis,
+          // ticks: ['jan-17', 'apr-17', 'jul-17', 'okt-17', 'jan-18'],
+          // offset:100,
+          stretch: true,
+          high:300,
+          low:0,
+          divisor:100,
+          type: Chartist.StepAxis,
+          ticks: ['jan-17', 'apr-17', 'jul-17', 'okt-17', 'jan-18'],
+        },
+      }).on('draw', function (data) {
+        console.log(data)
+        if (data.type === 'line' || data.type === 'area') {
+          data.element.animate({
+            d: {
+              begin: 2000 * data.index,
+              dur: 20000,
+              from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+              to: data.path.clone().stringify(),
+              easing: Chartist.Svg.Easing.easeOutQuint
+            }
+          });
+        }
+      });
+  </script>
+</body>
+
+</html>

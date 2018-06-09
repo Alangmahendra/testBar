@@ -20,10 +20,17 @@
     crossorigin="anonymous"></script>
 
   <link rel="stylesheet" href="bower_components/chartist/dist/chartist.min.css">
-  <script src="https://gionkunz.github.io/chartist-js/scripts/all.js"></script>
 
-  <link rel="stylesheet" href="bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
-  <script type="text/javascript" src="bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.min.js"></script>
+  <!-- <script src="https://gionkunz.github.io/chartist-js/scripts/all.js"></script> -->
+
+  <!-- <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css"> -->
+
+  <!-- <script type="text/javascript" src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.js"></script> -->
+
+  <!-- <script type="text/javascript" src="bower_components/chartist/bower_components/chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.js"></script> -->
+
+  <!-- <script type="text/javascript" src="chartist-plugin-tooltip.js"></script>
+  <link href="chartist-plugin-tooltip.css" rel="stylesheet" type="text/css" /> -->
 
 </head>
 
@@ -66,9 +73,9 @@
         axisY: {
           offset: 100,
         },
-        plugins: [
-          Chartist.plugins.tooltip()
-        ],
+        // plugins: [
+        //   Chartist.plugins.tooltip()
+        // ],
       }).on('draw', function (data) {
         console.log(data)
         if (data.type === 'bar') {
