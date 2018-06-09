@@ -41,16 +41,20 @@
         fullWidth: true,
         showArea: true,
         axisX: {
+          showGrid: false,
           // type: Chartist.StepAxis,
           // ticks: ['jan-17', 'apr-17', 'jul-17', 'okt-17', 'jan-18'],
           // offset:100,
           stretch: true,
-          high:300,
-          low:0,
-          divisor:100,
-          type: Chartist.StepAxis,
-          ticks: ['jan-17', 'apr-17', 'jul-17', 'okt-17', 'jan-18'],
+          high: 300,
+          low: 0,
+          divisor: 100,
+          // type: Chartist.StepAxis,
+          // ticks: ['jan-17', 'apr-17', 'jul-17', 'okt-17', 'jan-18'],
         },
+        axisY: {
+          showGrid: false,
+        }
       }).on('draw', function (data) {
         console.log(data)
         if (data.type === 'line' || data.type === 'area') {
