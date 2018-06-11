@@ -21,16 +21,6 @@
 
   <link rel="stylesheet" href="bower_components/chartist/dist/chartist.min.css">
 
-  <!-- <script src="https://gionkunz.github.io/chartist-js/scripts/all.js"></script> -->
-
-  <!-- <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css"> -->
-
-  <!-- <script type="text/javascript" src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.js"></script> -->
-
-  <!-- <script type="text/javascript" src="bower_components/chartist/bower_components/chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.js"></script> -->
-
-  <!-- <script type="text/javascript" src="chartist-plugin-tooltip.js"></script>
-  <link href="chartist-plugin-tooltip.css" rel="stylesheet" type="text/css" /> -->
 
 </head>
 
@@ -38,12 +28,12 @@
   <div class="container">
     <div class="ct-chart"></div>
     <!-- <div class="ct-chart2"></div> -->
+    <div id="afterClick"></div>
   </div>
   <script src="bower_components/chartist/dist/chartist.min.js"></script>
   <script>
-    var xLabels = [
-      0, 400, 600, 1000
-    ]
+    let searchUrl = "https://en.wikipedia.org/w/api.php?action=opensearch&format=json&search="
+    let contentUrl = "https://en.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
     new Chartist.Bar('.ct-chart', {
       labels: ['Hemogoblin'],
       series: [
@@ -59,14 +49,6 @@
           offset: 100,
           type: Chartist.FixedScaleAxis,
           ticks: [0, 400, 600, 1000],
-          // onlyInteger: true,
-          // labelInterpolationFnc: function (value, index) {
-          //   console.log(value)
-          //   return xLabels[index];
-          // },
-          // low:0,
-          // high:1000,
-          // divisor: 100
           stretch: true
 
         },
@@ -86,9 +68,12 @@
             alert(data.value.x)
           }
         }
-        if (data.type === 'label' && data.text === 'Hemogoblin') {
+        if (data.type === 'label') {
           data.element._node.onclick = () => {
-            alert(data.text)
+            alert(searchUrl + data.text)
+            console.log(searchUrl + data.text);
+            let url = searchUrl + data.text
+            let content
           }
         }
       });
