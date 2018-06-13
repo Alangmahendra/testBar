@@ -31,14 +31,72 @@
 <body>
   <div class="container">
     <div class="ct-chart"></div>
-    <!-- <div class="ct-chart2"></div> -->
+    <div class="ct-chart2"></div>
+    <div class="ct-chart3"></div>
     <div id="afterClick"></div>
   </div>
   <script src="bower_components/chartist/dist/chartist.min.js"></script>
   <script>
     let searchUrl = "https://id.wikipedia.org/w/api.php?action=opensearch&format=json&search="
     let contentUrl = "https://id.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
-    new Chartist.Bar('.ct-chart', {
+
+    new Chartist.Bar('.ct-chart2', {
+      labels: ['Laju endap darah'],
+      series: [
+        [400],
+        [200],
+        [400]
+      ]
+    }, {
+        stackBars: true,
+        horizontalBars: true,
+        axisX: {
+          showGrid: false,
+          offset: 100,
+          type: Chartist.FixedScaleAxis,
+          ticks: [0, 400, 600, 1000],
+          stretch: true
+
+        },
+        axisY: {
+          offset: 100,
+        },
+        // plugins: [
+        //   Chartist.plugins.tooltip()
+        // ],
+      }).on('draw', function (data) {
+        // console.log(data)
+        if (data.type === 'bar') {
+          data.element.attr({
+            style: 'stroke-width: 30px'
+          })
+          data.element._node.onclick = () => {
+            alert(data.value.x)
+          }
+        }
+        if (data.type === 'label') {
+          data.element._node.onclick = () => {
+            let url = searchUrl + data.text;
+            // console.log(url);
+            loadJSON(url, gotContent, 'jsonp')
+          }
+          function gotContent(data) {
+            // console.log(data[2]);
+            alert(data[2] ,'lebih lengkapnya kunjungi : ', data[3])
+            // let title = data[0]
+            // title = title.replace(/\s+/g, '_')
+            // let url = contentUrl + title
+            // console.log('url content',url);
+            // loadJSON(url,gotData,'jsonp')
+          }
+          // function gotData(data){
+          //   console.log(data);
+            
+          // }
+        }
+      });
+      
+      new Chartist.Bar('.ct-chart', {
       labels: ['Hemoglobin'],
       series: [
         [400],
@@ -93,7 +151,62 @@
           // }
         }
       });
+      
+      new Chartist.Bar('.ct-chart3', {
+      labels: ['Sel darah putih'],
+      series: [
+        [400],
+        [200],
+        [400]
+      ]
+    }, {
+        stackBars: true,
+        horizontalBars: true,
+        axisX: {
+          showGrid: false,
+          offset: 100,
+          type: Chartist.FixedScaleAxis,
+          ticks: [0, 400, 600, 1000],
+          stretch: true
 
+        },
+        axisY: {
+          offset: 100,
+        },
+        // plugins: [
+        //   Chartist.plugins.tooltip()
+        // ],
+      }).on('draw', function (data) {
+        // console.log(data)
+        if (data.type === 'bar') {
+          data.element.attr({
+            style: 'stroke-width: 30px'
+          })
+          data.element._node.onclick = () => {
+            alert(data.value.x)
+          }
+        }
+        if (data.type === 'label') {
+          data.element._node.onclick = () => {
+            let url = searchUrl + data.text;
+            // console.log(url);
+            loadJSON(url, gotContent, 'jsonp')
+          }
+          function gotContent(data) {
+            // console.log(data[2]);
+            alert(data[2] ,'lebih lengkapnya kunjungi : ', data[3])
+            // let title = data[0]
+            // title = title.replace(/\s+/g, '_')
+            // let url = contentUrl + title
+            // console.log('url content',url);
+            // loadJSON(url,gotData,'jsonp')
+          }
+          // function gotData(data){
+          //   console.log(data);
+            
+          // }
+        }
+      });
 
   </script>
 </body>
