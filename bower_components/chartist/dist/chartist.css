@@ -166,16 +166,16 @@
   stroke-width: 60px; }
 
 .ct-series-a .ct-point, .ct-series-a .ct-line, .ct-series-a .ct-bar, .ct-series-a .ct-slice-donut {
-  stroke: #d70206; }
+  stroke: #ff0000; }
 
 .ct-series-a .ct-slice-pie, .ct-series-a .ct-area {
-  fill: #d70206; }
+  fill: #ff0000; }
 
 .ct-series-b .ct-point, .ct-series-b .ct-line, .ct-series-b .ct-bar, .ct-series-b .ct-slice-donut {
-  stroke: #f05b4f; }
+  stroke: #3cff00; }
 
 .ct-series-b .ct-slice-pie, .ct-series-b .ct-area {
-  fill: #f05b4f; }
+  fill: #3cff00; }
 
 .ct-series-c .ct-point, .ct-series-c .ct-line, .ct-series-c .ct-bar, .ct-series-c .ct-slice-donut {
   stroke: #f4c63d; }

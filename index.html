@@ -21,16 +21,10 @@
 
   <link rel="stylesheet" href="bower_components/chartist/dist/chartist.min.css">
 
-  <!-- <script src="https://gionkunz.github.io/chartist-js/scripts/all.js"></script> -->
-
-  <!-- <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css"> -->
-
-  <!-- <script type="text/javascript" src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.js"></script> -->
-
-  <!-- <script type="text/javascript" src="bower_components/chartist/bower_components/chartist-plugin-pointlabels/dist/chartist-plugin-pointlabels.js"></script> -->
-
-  <!-- <script type="text/javascript" src="chartist-plugin-tooltip.js"></script>
-  <link href="chartist-plugin-tooltip.css" rel="stylesheet" type="text/css" /> -->
+  <script src="libraries/p5.js"></script>
+  <script src="libraries/p5.dom.js"></script>
+  <script src="libraries/p5.sound.js"></script>
+  <script src="sketch.js"></script>
 
 </head>
 
@@ -38,14 +32,14 @@
   <div class="container">
     <div class="ct-chart"></div>
     <!-- <div class="ct-chart2"></div> -->
+    <div id="afterClick"></div>
   </div>
   <script src="bower_components/chartist/dist/chartist.min.js"></script>
   <script>
-    var xLabels = [
-      0, 400, 600, 1000
-    ]
+    let searchUrl = "https://id.wikipedia.org/w/api.php?action=opensearch&format=json&search="
+    let contentUrl = "https://id.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
     new Chartist.Bar('.ct-chart', {
-      labels: ['Hemogoblin'],
+      labels: ['Hemoglobin'],
       series: [
         [400],
         [200],
@@ -59,14 +53,6 @@
           offset: 100,
           type: Chartist.FixedScaleAxis,
           ticks: [0, 400, 600, 1000],
-          // onlyInteger: true,
-          // labelInterpolationFnc: function (value, index) {
-          //   console.log(value)
-          //   return xLabels[index];
-          // },
-          // low:0,
-          // high:1000,
-          // divisor: 100
           stretch: true
 
         },
@@ -77,7 +63,7 @@
         //   Chartist.plugins.tooltip()
         // ],
       }).on('draw', function (data) {
-        console.log(data)
+        // console.log(data)
         if (data.type === 'bar') {
           data.element.attr({
             style: 'stroke-width: 30px'
@@ -86,45 +72,29 @@
             alert(data.value.x)
           }
         }
-        if (data.type === 'label' && data.text === 'Hemogoblin') {
+        if (data.type === 'label') {
           data.element._node.onclick = () => {
-            alert(data.text)
+            let url = searchUrl + data.text;
+            // console.log(url);
+            loadJSON(url, gotContent, 'jsonp')
           }
+          function gotContent(data) {
+            // console.log(data[2]);
+            alert(data[2] ,'lebih lengkapnya kunjungi : ', data[3])
+            // let title = data[0]
+            // title = title.replace(/\s+/g, '_')
+            // let url = contentUrl + title
+            // console.log('url content',url);
+            // loadJSON(url,gotData,'jsonp')
+          }
+          // function gotData(data){
+          //   console.log(data);
+            
+          // }
         }
       });
 
-    new Chartist.Bar('.ct-chart2', {
-      labels: ['LED'],
-      series: [
-        [400],
-        [200]
-      ]
-    }, {
-        stackBars: true,
-        horizontalBars: true,
-        axisX: {
-          showGrid: false,
-          offset: 100
-        },
-        axisY: {
-          offset: 100
-        }
-      }).on('draw', function (data) {
-        console.log(data)
-        if (data.type === 'bar') {
-          data.element.attr({
-            style: 'stroke-width: 30px'
-          })
-          data.element._node.onclick = () => {
-            alert(data.value.x)
-          }
-        }
-        if (data.type === 'label' && data.text === 'LED') {
-          data.element._node.onclick = () => {
-            alert(data.text)
-          }
-        }
-      });
+
   </script>
 </body>
 
