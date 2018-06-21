@@ -90,8 +90,8 @@
         }
       });
 
-   
-  var chart = new Chartist.Bar('.ct-chart', {
+
+    var chart = new Chartist.Bar('.ct-chart', {
       labels: ['Hemoglobin'],
       series: [
         { name: "danger", data: [400] },
@@ -106,8 +106,10 @@
           offset: 100,
           type: Chartist.FixedScaleAxis,
           ticks: [0, 400, 600, 1000],
-          stretch: true
-
+          stretch: true,
+          labelInterpolationFnc: function (value) {
+            return value.toFixed(2);
+          }
         },
         axisY: {
           offset: 100,
@@ -116,43 +118,43 @@
         //   Chartist.plugins.tooltip()
         // ],
       })
-      
-      var seriesIndex = -1;
-      chart.on('created', function () {
-        seriesIndex = -1;
-      })
 
-      chart.on('draw', function (data) {
-        // console.log(data)
-        if (data.type === 'bar') {
-          data.element.attr({
-            style: 'stroke-width: 30px'
-          })
-          data.element._node.onclick = () => {
-            alert(data.value.x)
-          }
-          if (data.index === 0) {
-            seriesIndex++;
-          }
-          // console.log(chart.data.series[seriesIndex].name )
-          var seriesName = chart.data.series[seriesIndex].name;
-          data.element.root().elem('text', {
-            x: data.x1,
-            y: data.y2 + 5
-          }, 'ct-bar-label').text(seriesName)
+    var seriesIndex = -1;
+    chart.on('created', function () {
+      seriesIndex = -1;
+    })
+
+    chart.on('draw', function (data) {
+      // console.log(data)
+      if (data.type === 'bar') {
+        data.element.attr({
+          style: 'stroke-width: 30px'
+        })
+        data.element._node.onclick = () => {
+          alert(data.value.x)
         }
-        if (data.type === 'label') {
-          data.element._node.onclick = () => {
-            let url = searchUrl + data.text;
-            // console.log(url);
-            loadJSON(url, gotContent, 'jsonp')
-          }
-          function gotContent(data) {
-            // console.log(data[2]);
-            alert(data[2], 'lebih lengkapnya kunjungi : ', data[3])
-          }
+        if (data.index === 0) {
+          seriesIndex++;
         }
-      });
+        // console.log(chart.data.series[seriesIndex].name )
+        var seriesName = chart.data.series[seriesIndex].name;
+        data.element.root().elem('text', {
+          x: data.x1,
+          y: data.y2 + 5
+        }, 'ct-bar-label').text(seriesName)
+      }
+      if (data.type === 'label') {
+        data.element._node.onclick = () => {
+          let url = searchUrl + data.text;
+          // console.log(url);
+          loadJSON(url, gotContent, 'jsonp')
+        }
+        function gotContent(data) {
+          // console.log(data[2]);
+          alert(data[2], 'lebih lengkapnya kunjungi : ', data[3])
+        }
+      }
+    });
 
     new Chartist.Bar('.ct-chart3', {
       labels: ['Sel darah putih'],
