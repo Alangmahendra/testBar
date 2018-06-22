@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+    <script src="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <title>Document</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="bower_components/chartist/dist/chartist.min.css">
+
+    <script src="libraries/p5.js"></script>
+    <script src="libraries/p5.dom.js"></script>
+    <script src="libraries/p5.sound.js"></script>
+    <script src="sketch.js"></script>
+
+    <script src="chartist-bar-labels.js"></script>
+</head>
+
+<body>
+    <script src="bower_components/chartist/dist/chartist.min.js"></script>
+
+    <div class="container">
+        <div class="ct-coba"></div>
+    </div>
+    <script>
+        let searchUrl = "https://id.wikipedia.org/w/api.php?action=opensearch&format=json&search="
+        let contentUrl = "https://id.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
+
+        var chart = new Chartist.Bar('.ct-coba', {
+            labels: ['Hemoglobin'],
+            series: [
+                [0],
+                [11],
+                [18]
+            ]
+        }, {
+                stackBars: true,
+                horizontalBars: true,
+                axisX: {
+                    showGrid: false,
+                    offset: 100,
+                    stretch: true,
+                },
+                axisY:{
+                    offset:100
+                }
+            })
+
+        chart.on('draw', (data) => {
+            if (data.type === 'bar') {
+                data.element.attr({
+                    style: 'stroke-width: 30px'
+                })
+                data.element._node.onclick = () => {
+                    alert(data.value.x)
+                }
+            }
+
+            if (data.type === 'label') {
+                data.element._node.onclick = () => {
+                    let url = searchUrl + data.text;
+                    // console.log(url);
+                    loadJSON(url, gotContent, 'jsonp')
+                }
+                function gotContent(data) {
+                    // console.log(data[2]);
+                    alert(data[2], 'lebih lengkapnya kunjungi : ', data[3])
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
