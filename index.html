@@ -26,76 +26,32 @@
   <script src="libraries/p5.sound.js"></script>
   <script src="sketch.js"></script>
 
-  <script src="chartist-bar-labels.js"></script>
+  <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
 </head>
 
 <body>
+
   <div class="container">
     <div class="ct-chart"></div>
-    <div class="ct-chart2"></div>
-    <div class="ct-chart3"></div>
-    <div id="afterClick"></div>
   </div>
+
   <script src="bower_components/chartist/dist/chartist.min.js"></script>
+
+  <script src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.min.js"></script>
+
+  <script src="chartist-bar-labels.js"></script>
+
   <script>
     let searchUrl = "https://id.wikipedia.org/w/api.php?action=opensearch&format=json&search="
     let contentUrl = "https://id.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
-
-    new Chartist.Bar('.ct-chart2', {
-      labels: ['Laju endap darah'],
-      series: [
-        [400],
-        [200],
-        [400]
-      ]
-    }, {
-        stackBars: true,
-        horizontalBars: true,
-        axisX: {
-          showGrid: false,
-          offset: 100,
-          type: Chartist.FixedScaleAxis,
-          ticks: [0, 400, 600, 1000],
-          stretch: true
-        },
-        axisY: {
-          offset: 100,
-        },
-        // plugins: [
-        //   Chartist.plugins.ctBarLabels()
-        // ],
-      }).on('draw', function (data) {
-        // console.log(data)
-        if (data.type === 'bar') {
-          data.element.attr({
-            style: 'stroke-width: 30px'
-          })
-          data.element._node.onclick = () => {
-            alert(data.value.x)
-          }
-        }
-        if (data.type === 'label') {
-          data.element._node.onclick = () => {
-            let url = searchUrl + data.text;
-            // console.log(url);
-            loadJSON(url, gotContent, 'jsonp')
-          }
-          function gotContent(data) {
-            // console.log(data[2]);
-            alert(data[2], 'lebih lengkapnya kunjungi : ', data[3])
-
-          }
-
-        }
-      });
 
 
     var chart = new Chartist.Bar('.ct-chart', {
       labels: ['Hemoglobin'],
       series: [
-        { name: "danger", data: [400] },
-        { name: "normal", data: [200] },
-        { name: "danger", data: [400] }
+        { name: "danger", data: [11.0] },
+        { name: "normal", data: [4.0] },
+        { name: "danger", data: [15.0] }
       ]
     }, {
         stackBars: true,
@@ -104,18 +60,22 @@
           showGrid: false,
           offset: 100,
           type: Chartist.FixedScaleAxis,
-          ticks: [0, 400, 600, 1000],
+          ticks: [0, 11, 15, 30],
           stretch: true,
           labelInterpolationFnc: function (value) {
-            return value.toFixed(2);
+            return value.toFixed(1);
           }
         },
         axisY: {
           offset: 100,
         },
-        // plugins: [
-        //   Chartist.plugins.tooltip()
-        // ],
+        plugins: [
+          Chartist.plugins.tooltip({
+            appendToBody: true,
+            pointClass: 'my-cool-point'
+          }),
+          Chartist.plugins.ctBarLabels()
+        ],
       })
 
     var seriesIndex = -1;
@@ -124,7 +84,7 @@
     })
 
     chart.on('draw', function (data) {
-      // console.log(data)
+      console.log(data)
       if (data.type === 'bar') {
         data.element.attr({
           style: 'stroke-width: 30px'
@@ -142,74 +102,28 @@
           y: data.y2 + 5
         }, 'ct-bar-label').text(seriesName)
       }
-      if (data.type === 'label') {
+      if (data.type === 'label' && data.text === 'Hemoglobin') {
         data.element._node.onclick = () => {
           let url = searchUrl + data.text;
-          // console.log(url);
+          // console.log(data.text);
           loadJSON(url, gotContent, 'jsonp')
         }
         function gotContent(data) {
-          // console.log(data[2]);
+          // console.log(data);
           alert(data[2], 'lebih lengkapnya kunjungi : ', data[3])
         }
       }
-    });
+    })
 
-    new Chartist.Bar('.ct-chart3', {
-      labels: ['Sel darah putih'],
-      series: [
-        [400],
-        [200],
-        [400]
-      ]
-    }, {
-        stackBars: true,
-        horizontalBars: true,
-        axisX: {
-          showGrid: false,
-          offset: 100,
-          type: Chartist.FixedScaleAxis,
-          ticks: [0, 400, 600, 1000],
-          stretch: true
-
-        },
-        axisY: {
-          offset: 100,
-        },
-        // plugins: [
-        //   Chartist.plugins.tooltip()
-        // ],
-      }).on('draw', function (data) {
-        // console.log(data)
-        if (data.type === 'bar') {
-          data.element.attr({
-            style: 'stroke-width: 30px'
-          })
-          data.element._node.onclick = () => {
-            alert(data.value.x)
-          }
-        }
-        if (data.type === 'label') {
-          data.element._node.onclick = () => {
-            let url = searchUrl + data.text;
-            // console.log(url);
-            loadJSON(url, gotContent, 'jsonp')
-          }
-          function gotContent(data) {
-            // console.log(data[2]);
-            alert(data[2], 'lebih lengkapnya kunjungi : ', data[3])
-            // let title = data[0]
-            // title = title.replace(/\s+/g, '_')
-            // let url = contentUrl + title
-            // console.log('url content',url);
-            // loadJSON(url,gotData,'jsonp')
-          }
-          // function gotData(data){
-          //   console.log(data);
-
-          // }
-        }
-      });
+    function clone(close) {
+      var c = new Chartist.Svg.Path(close || this.close)
+      c.pos = this.pos,
+        c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
+          return Chartist.extend({}, pathElement)
+        })
+      c.options = Chartist.extend({}, this.options);
+      return c
+    }
 
   </script>
 </body>
