@@ -32,19 +32,23 @@
 <body>
 
   <div class="container">
+    <div>asasas</div>
+    <div>kjsndjankjn</div>
     <div class="ct-chart"></div>
   </div>
 
   <script src="bower_components/chartist/dist/chartist.min.js"></script>
 
-  <script src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.min.js"></script>
+  <script src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.js"></script>
 
   <script src="chartist-bar-labels.js"></script>
 
   <script>
+
     let searchUrl = "https://id.wikipedia.org/w/api.php?action=opensearch&format=json&search="
     let contentUrl = "https://id.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
 
+    let resultLab = [12]
 
     var chart = new Chartist.Bar('.ct-chart', {
       labels: ['Hemoglobin'],
@@ -72,9 +76,11 @@
         plugins: [
           Chartist.plugins.tooltip({
             appendToBody: true,
-            pointClass: 'my-cool-point'
+            pointClass: 'my-cool-point',
+            alwaysOn: true,
+            target: 12
           }),
-          Chartist.plugins.ctBarLabels()
+          // Chartist.plugins.ctBarLabels()
         ],
       })
 
@@ -84,7 +90,7 @@
     })
 
     chart.on('draw', function (data) {
-      console.log(data)
+      // console.log(data)
       if (data.type === 'bar') {
         data.element.attr({
           style: 'stroke-width: 30px'
@@ -115,15 +121,40 @@
       }
     })
 
-    function clone(close) {
-      var c = new Chartist.Svg.Path(close || this.close)
-      c.pos = this.pos,
-        c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
-          return Chartist.extend({}, pathElement)
-        })
-      c.options = Chartist.extend({}, this.options);
-      return c
+    function getStackTotals(seriesList) {
+      var stackTotals = [];
+      seriesList.forEach(function eachSeries(series) {
+        series.data.forEach(function eachData(value, valueIndex) {
+          stackTotals[valueIndex] = stackTotals[valueIndex] || 0;
+          stackTotals[valueIndex] += value;
+        });
+      });
+      return stackTotals;
     }
+
+    chart.on('data', function (context) {
+      var stackTotals = getStackTotals(context.data.series);
+      // console.log(stackTotals);
+      context.data.series.forEach(function eachSeries(series) {
+        series.data = series.data.map(function addStackTotalToMeta(value, valueIndex) {
+          return {
+            value: value,
+            meta: stackTotals[valueIndex]
+          };
+        });
+      });
+    });
+
+
+    // function clone(close) {
+    //   var c = new Chartist.Svg.Path(close || this.close)
+    //   c.pos = this.pos,
+    //     c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
+    //       return Chartist.extend({}, pathElement)
+    //     })
+    //   c.options = Chartist.extend({}, this.options);
+    //   return c
+    // }
 
   </script>
 </body>

@@ -32,12 +32,14 @@
       anchorToPoint: false,
       appendToBody: false,
       class: undefined,
-      pointClass: 'ct-point'
+      pointClass: 'ct-point',
+      alwaysOn:false,
+      target:undefined
     };
 
     Chartist.plugins = Chartist.plugins || {};
     Chartist.plugins.tooltip = function (options) {
-      options = Chartist.extend({}, defaultOptions, options);
+      options = Chartist.extend({}, defaultOptions, options)
 
       return function tooltip(chart) {
         var tooltipSelector = options.pointClass;
@@ -144,6 +146,12 @@
         on('mousemove', null, function (event) {
           if (false === options.anchorToPoint)
             setPosition(event);
+        });
+
+        on('onload', tooltipSelector, function (event) {
+          if(options.alwaysOn === true){
+            show($toolTip)
+          }
         });
 
         function setPosition(event) {
