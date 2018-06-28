@@ -149,8 +149,11 @@
         });
 
         on('onload', tooltipSelector, function (event) {
-          if(options.alwaysOn === true){
-            show($toolTip)
+          if(options.target){
+            options.alwaysOn = true
+            if(options.alwaysOn === true){
+              show($toolTip)
+            }
           }
         });
 
