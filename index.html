@@ -56,7 +56,8 @@
         { name: "danger", data: [11.0] },
         { name: "normal", data: [4.0] },
         { name: "danger", data: [15.0] }
-      ]
+      ],
+      target: 12
     }, {
         stackBars: true,
         horizontalBars: true,
@@ -74,14 +75,13 @@
           offset: 100,
         },
         plugins: [
-          Chartist.plugins.tooltip({
-            appendToBody: true,
-            pointClass: 'my-cool-point',
-            alwaysOn: true,
-            target: 12
-          }),
+          // Chartist.plugins.tooltip({
+          //   appendToBody: true,
+          //   pointClass: 'my-cool-point',
+          // }),
           // Chartist.plugins.ctBarLabels()
         ],
+
       })
 
     var seriesIndex = -1;
@@ -90,7 +90,6 @@
     })
 
     chart.on('draw', function (data) {
-      // console.log(data)
       if (data.type === 'bar') {
         data.element.attr({
           style: 'stroke-width: 30px'
@@ -101,37 +100,52 @@
         if (data.index === 0) {
           seriesIndex++;
         }
-        // console.log(chart.data.series[seriesIndex].name )
+
         var seriesName = chart.data.series[seriesIndex].name;
         data.element.root().elem('text', {
           x: data.x1,
           y: data.y2 + 5
         }, 'ct-bar-label').text(seriesName)
       }
+
       if (data.type === 'label' && data.text === 'Hemoglobin') {
-        console.log(data.element._node)
-        
-          let url = searchUrl + data.text;
-          // console.log(data.text);
-          loadJSON(url, gotContent, 'jsonp')
-        
+        let url = searchUrl + data.text
+        loadJSON(url, gotContent, 'jsonp')
+
         function gotContent(data) {
-          // console.log(data);
-          // alert(data[2], 'lebih lengkapnya kunjungi : ', data[3])
           $(function () {
             var link = String(data[3])
-            console.log(link)
             $('.ct-start').popover({
               container: 'body',
-              placement:'bottom',
-              title:String(data[2]),
-              html:true,
-              content:"<a target='_blank' href='"+link+"'>Wikipedia</a>",
+              placement: 'bottom',
+              title: String(data[2]),
+              html: true,
+              content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
               trigger: 'hover',
-              delay:{"hide":5000}
+              delay: { "hide": 5000 }
             })
           })
         }
+
+        for (let i = 0; i < chart.data.series[0].data[0].meta; i++) {
+          // console.log(i)
+          if (i === chart.data.target) {
+            $(function () {
+              $('.ct-bar').popover({
+                container: 'body',
+                placement: 'top',
+                content: i,
+                trigger: 'hover focus',
+              })
+            })
+          }else{
+            console.log('bukan target')
+          }
+        }
+
+        console.log(chart)
+
+
       }
     })
 
