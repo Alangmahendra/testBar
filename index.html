@@ -35,12 +35,12 @@
     <div>asasas</div>
     <div>kjsndjankjn</div>
     <div class="ct-chart"></div>
+    <!-- <div class="ct-got"></div> -->
   </div>
 
+
   <script src="bower_components/chartist/dist/chartist.min.js"></script>
-
   <script src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.js"></script>
-
   <script src="chartist-bar-labels.js"></script>
 
   <script>
@@ -49,140 +49,590 @@
     let contentUrl = "https://id.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
 
     let resultLab = [12]
+    // let seriesIndex = -1
 
-    var chart = new Chartist.Bar('.ct-chart', {
-      labels: ['Hemoglobin'],
-      series: [
-        { name: "danger", data: [11.0] },
-        { name: "normal", data: [4.0] },
-        { name: "danger", data: [15.0] }
-      ],
-      target: 12
-    }, {
-        stackBars: true,
-        horizontalBars: true,
-        axisX: {
-          showGrid: false,
-          offset: 100,
-          type: Chartist.FixedScaleAxis,
-          ticks: [0, 11, 15, 30],
-          stretch: true,
-          labelInterpolationFnc: function (value) {
-            return value.toFixed(1);
-          }
-        },
-        axisY: {
-          offset: 100,
-        },
-        plugins: [
-          // Chartist.plugins.tooltip({
-          //   appendToBody: true,
-          //   pointClass: 'my-cool-point',
-          // }),
-          // Chartist.plugins.ctBarLabels()
-        ],
+    var data = [
+      { test: "GOT", result: 44, rujukanBawah: 0, rujukanAtas: 33, kondisi: '<' },
+      { test: "GPT", result: 38, rujukanBawah: 0, rujukanAtas: 50, kondisi: '<' },
+      { test: "Gamma GT", result: 15, rujukanBawah: 0, rujukanAtas: 66, kondisi: '<' },
+      { test: "Fostfatase Alkali", result: 93, rujukanBawah: 53, rujukanAtas: 128, kondisi: '-' },
+      { test: "Cholesterol Total", result: 185, rujukanBawah: 0, rujukanAtas: 200, kondisi: '<' },
+      { test: "Cholesterol LDL Direk", result: 151, rujukanBawah: 0, rujukanAtas: 100, kondisi: '<' },
+      { test: "Cholesterol HDL", result: 34, rujukanBawah: 40, rujukanAtas: 0, kondisi: '>=' },
+      { test: "Trigliserida", result: 62, rujukanBawah: 0, rujukanAtas: 150, kondisi: '<' },
+      { test: "Urea N", result: 14, rujukanBawah: 6, rujukanAtas: 20, kondisi: '-' },
+      { test: "Ureum", result: 30, rujukanBawah: 13, rujukanAtas: 43, kondisi: '-' },
+      { test: "Kreatinin", result: 1.21, rujukanBawah: 0.70, rujukanAtas: 1.20, kondisi: '-' },
+      { test: "eLFG (CKDP-EPI)", result: 76, rujukanBawah: 0, rujukanAtas: 0, kondisi: '' },
+      { test: "Asam Urat", result: 51, rujukanBawah: 0, rujukanAtas: 7, kondisi: '<' }
+    ]
 
-      })
+    for (let i = 0; i < data.length; i++) {
+      // console.log(data[i].rujukanBawah)
+      var labelsName = String(data[i].test)
+      let seriesIndex = -1
+      if (data[i].kondisi === '-') {
+        if (data[i].result > data[i].rujukanAtas) {
+          $('.container').append("<div class='ct-got" + [i] + "'></div>")
+          var got = new Chartist.Bar('.ct-got' + [i], {
+            labels: [labelsName],
+            series: [
+              { name: "danger", data: [data[i].rujukanBawah] },
+              { name: "normal", data: [data[i].rujukanAtas] },
+              { name: "danger", data: [data[i].result] }
+            ],
+            target: data[i].result
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [0, data[i].rujukanBawah, data[i].rujukanAtas, data[i].rujukanBawah + data[i].result],
+                stretch: true,
+                // labelInterpolationFnc: function (value) {
+                //   return value.toFixed(1);
+                // }
+              },
+              axisY: {
+                offset: 100,
+              },
+              plugins: [
+                // Chartist.plugins.tooltip({
+                //   appendToBody: true,
+                //   pointClass: 'my-cool-point',
+                // }),
+                // Chartist.plugins.ctBarLabels()
+              ],
+            }).on('created', function () {
+              seriesIndex = -1;
+            }).on('draw', function (data) {
+              if (data.type === 'bar') {
+                data.element.attr({
+                  style: 'stroke-width: 30px'
+                })
+                data.element._node.onclick = () => {
+                  alert(data.value.x)
+                }
+                if (data.index === 0) {
+                  seriesIndex++;
+                }
+                var seriesName = got.data.series[seriesIndex].name;
+                data.element.root().elem('text', {
+                  x: data.x1,
+                  y: data.y2 + 5
+                }, 'ct-bar-label').text(seriesName)
+              }
 
-    var seriesIndex = -1;
-    chart.on('created', function () {
-      seriesIndex = -1;
-    })
+              if (data.type === 'label' && data.text === labelsName) {
+                console.log('ini data text', data.text)
 
-    chart.on('draw', function (data) {
-      if (data.type === 'bar') {
-        data.element.attr({
-          style: 'stroke-width: 30px'
-        })
-        data.element._node.onclick = () => {
-          alert(data.value.x)
-        }
-        if (data.index === 0) {
-          seriesIndex++;
-        }
+                let url = searchUrl + data.text.replace(' ', '_')
+                console.log(url)
+                loadJSON(url, gotContent, 'jsonp')
 
-        var seriesName = chart.data.series[seriesIndex].name;
-        data.element.root().elem('text', {
-          x: data.x1,
-          y: data.y2 + 5
-        }, 'ct-bar-label').text(seriesName)
-      }
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover',
+                      delay: { "hide": 5000 }
+                    })
+                  })
+                }
 
-      if (data.type === 'label' && data.text === 'Hemoglobin') {
-        let url = searchUrl + data.text
-        loadJSON(url, gotContent, 'jsonp')
-
-        function gotContent(data) {
-          $(function () {
-            var link = String(data[3])
-            $('.ct-start').popover({
-              container: 'body',
-              placement: 'bottom',
-              title: String(data[2]),
-              html: true,
-              content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-              trigger: 'hover',
-              delay: { "hide": 5000 }
+                for (let j = 0; j < got.data.series[0].data[0].meta; j++) {
+                  // console.log(i)
+                  if (j === got.data.target) {
+                    $(function () {
+                      $('.ct-bar').popover({
+                        container: 'body',
+                        placement: 'top',
+                        content: i,
+                        trigger: 'hover focus',
+                      })
+                    })
+                  } else {
+                    console.log('bukan target')
+                  }
+                }
+                // console.log(chart)
+              }
             })
-          })
-        }
+        } else {
+          $('.container').append("<div class='ct-got" + [i] + "'></div>")
+          var got = new Chartist.Bar('.ct-got' + [i], {
+            labels: [labelsName],
+            series: [
+              { name: "danger", data: [data[i].rujukanBawah] },
+              { name: "normal", data: [data[i].rujukanAtas] },
+              { name: "danger", data: [data[i].rujukanBawah + data[i].rujukanAtas] }
+            ],
+            target: data[i].result
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [0, data[i].rujukanBawah, data[i].rujukanAtas, data[i].rujukanBawah + data[i].rujukanAtas],
+                stretch: true,
+                // labelInterpolationFnc: function (value) {
+                //   return value.toFixed(1);
+                // }
+              },
+              axisY: {
+                offset: 100,
+              },
+              plugins: [
+                // Chartist.plugins.tooltip({
+                //   appendToBody: true,
+                //   pointClass: 'my-cool-point',
+                // }),
+                // Chartist.plugins.ctBarLabels()
+              ],
+            }).on('created', function () {
+              seriesIndex = -1;
+            }).on('draw', function (data) {
+              if (data.type === 'bar') {
+                data.element.attr({
+                  style: 'stroke-width: 30px'
+                })
+                data.element._node.onclick = () => {
+                  alert(data.value.x)
+                }
+                if (data.index === 0) {
+                  seriesIndex++;
+                }
+                var seriesName = got.data.series[seriesIndex].name;
+                data.element.root().elem('text', {
+                  x: data.x1,
+                  y: data.y2 + 5
+                }, 'ct-bar-label').text(seriesName)
+              }
 
-        for (let i = 0; i < chart.data.series[0].data[0].meta; i++) {
-          // console.log(i)
-          if (i === chart.data.target) {
-            $(function () {
-              $('.ct-bar').popover({
-                container: 'body',
-                placement: 'top',
-                content: i,
-                trigger: 'hover focus',
-              })
+              if (data.type === 'label' && data.text === labelsName) {
+                console.log('ini data text', data.text)
+
+                let url = searchUrl + data.text.replace(' ', '_')
+                console.log(url)
+                loadJSON(url, gotContent, 'jsonp')
+
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover',
+                      delay: { "hide": 5000 }
+                    })
+                  })
+                }
+
+                for (let j = 0; j < got.data.series[0].data[0].meta; j++) {
+                  // console.log(i)
+                  if (j === got.data.target) {
+                    $(function () {
+                      $('.ct-bar').popover({
+                        container: 'body',
+                        placement: 'top',
+                        content: i,
+                        trigger: 'hover focus',
+                      })
+                    })
+                  } else {
+                    console.log('bukan target')
+                  }
+                }
+                // console.log(chart)
+              }
             })
-          }else{
-            console.log('bukan target')
-          }
         }
+      } else if (data[i].kondisi === '<') {
+        if (data[i].result > data[i].rujukanAtas) {
+          $('.container').append("<div class='ct-got" + [i] + "'></div>")
+          var got = new Chartist.Bar('.ct-got' + [i], {
+            labels: [labelsName],
+            series: [
+              { name: "normal", data: [data[i].rujukanAtas] },
+              { name: "danger", data: [data[i].result] }
+            ],
+            target: data[i].result
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [0, data[i].rujukanAtas, data[i].rujukanAtas + data[i].result],
+                stretch: true,
+                // labelInterpolationFnc: function (value) {
+                //   return value.toFixed(1);
+                // }
+              },
+              axisY: {
+                offset: 100,
+              },
+              plugins: [
+                // Chartist.plugins.tooltip({
+                //   appendToBody: true,
+                //   pointClass: 'my-cool-point',
+                // }),
+                // Chartist.plugins.ctBarLabels()
+              ],
+            }).on('created', function () {
+              seriesIndex = -1;
+            }).on('draw', function (data) {
+              if (data.type === 'bar') {
+                data.element.attr({
+                  style: 'stroke-width: 30px'
+                })
+                data.element._node.onclick = () => {
+                  alert(data.value.x)
+                }
+                if (data.index === 0) {
+                  seriesIndex++;
+                }
+                var seriesName = got.data.series[seriesIndex].name;
+                data.element.root().elem('text', {
+                  x: data.x1,
+                  y: data.y2 + 5
+                }, 'ct-bar-label').text(seriesName)
+              }
 
-        console.log(chart)
+              if (data.type === 'label' && data.text === labelsName) {
+                console.log('ini data text', data.text)
 
+                let url = searchUrl + data.text.replace(' ', '_')
+                console.log(url)
+                loadJSON(url, gotContent, 'jsonp')
 
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover',
+                      delay: { "hide": 5000 }
+                    })
+                  })
+                }
+
+                for (let j = 0; j < got.data.series[0].data[0].meta; j++) {
+                  // console.log(i)
+                  if (j === got.data.target) {
+                    $(function () {
+                      $('.ct-bar').popover({
+                        container: 'body',
+                        placement: 'top',
+                        content: i,
+                        trigger: 'hover focus',
+                      })
+                    })
+                  } else {
+                    console.log('bukan target')
+                  }
+                }
+                // console.log(chart)
+              }
+            })
+        } else {
+          $('.container').append("<div class='ct-got" + [i] + "'></div>")
+          var got = new Chartist.Bar('.ct-got' + [i], {
+            labels: [labelsName],
+            series: [
+              { name: "normal", data: [data[i].rujukanAtas] },
+            ],
+            target: data[i].result
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [0, data[i].rujukanAtas],
+                stretch: true,
+                // labelInterpolationFnc: function (value) {
+                //   return value.toFixed(1);
+                // }
+              },
+              axisY: {
+                offset: 100,
+              },
+              plugins: [
+                // Chartist.plugins.tooltip({
+                //   appendToBody: true,
+                //   pointClass: 'my-cool-point',
+                // }),
+                // Chartist.plugins.ctBarLabels()
+              ],
+            }).on('created', function () {
+              seriesIndex = -1;
+            }).on('draw', function (data) {
+              if (data.type === 'bar') {
+                data.element.attr({
+                  style: 'stroke-width: 30px'
+                })
+                data.element._node.onclick = () => {
+                  alert(data.value.x)
+                }
+                if (data.index === 0) {
+                  seriesIndex++;
+                }
+                var seriesName = got.data.series[seriesIndex].name;
+                data.element.root().elem('text', {
+                  x: data.x1,
+                  y: data.y2 + 5
+                }, 'ct-bar-label').text(seriesName)
+              }
+
+              if (data.type === 'label' && data.text === labelsName) {
+                console.log('ini data text', data.text)
+
+                let url = searchUrl + data.text.replace(' ', '_')
+                console.log(url)
+                loadJSON(url, gotContent, 'jsonp')
+
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover',
+                      delay: { "hide": 5000 }
+                    })
+                  })
+                }
+
+                for (let j = 0; j < got.data.series[0].data[0].meta; j++) {
+                  // console.log(i)
+                  if (j === got.data.target) {
+                    $(function () {
+                      $('.ct-bar').popover({
+                        container: 'body',
+                        placement: 'top',
+                        content: i,
+                        trigger: 'hover focus',
+                      })
+                    })
+                  } else {
+                    console.log('bukan target')
+                  }
+                }
+                // console.log(chart)
+              }
+            })
+        }
+      } else if (data[i].kondisi === '>=') {
+        if (data[i].result < data[i].rujukanBawah) {
+          $('.container').append("<div class='ct-got" + [i] + "'></div>")
+          var got = new Chartist.Bar('.ct-got' + [i], {
+            labels: [labelsName],
+            series: [
+              { name: "danger", data: [-data[i].result] },
+              { name: "danger", data: [data[i].rujukanBawah] }
+            ],
+            target: data[i].result
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [-data[i].result, data[i].rujukanBawah],
+                stretch: true,
+                // labelInterpolationFnc: function (value) {
+                //   return value.toFixed(1);
+                // }
+              },
+              axisY: {
+                offset: 100,
+              },
+              plugins: [
+                // Chartist.plugins.tooltip({
+                //   appendToBody: true,
+                //   pointClass: 'my-cool-point',
+                // }),
+                // Chartist.plugins.ctBarLabels()
+              ],
+            }).on('created', function () {
+              seriesIndex = -1;
+            }).on('draw', function (data) {
+              if (data.type === 'bar') {
+                data.element.attr({
+                  style: 'stroke-width: 30px'
+                })
+                data.element._node.onclick = () => {
+                  alert(data.value.x)
+                }
+                if (data.index === 0) {
+                  seriesIndex++;
+                }
+                var seriesName = got.data.series[seriesIndex].name;
+                data.element.root().elem('text', {
+                  x: data.x1,
+                  y: data.y2 + 5
+                }, 'ct-bar-label').text(seriesName)
+              }
+
+              if (data.type === 'label' && data.text === labelsName) {
+                console.log('ini data text', data.text)
+
+                let url = searchUrl + data.text.replace(' ', '_')
+                console.log(url)
+                loadJSON(url, gotContent, 'jsonp')
+
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover',
+                      delay: { "hide": 5000 }
+                    })
+                  })
+                }
+
+                for (let j = 0; j < got.data.series[0].data[0].meta; j++) {
+                  // console.log(i)
+                  if (j === got.data.target) {
+                    $(function () {
+                      $('.ct-bar').popover({
+                        container: 'body',
+                        placement: 'top',
+                        content: i,
+                        trigger: 'hover focus',
+                      })
+                    })
+                  } else {
+                    console.log('bukan target')
+                  }
+                }
+                // console.log(chart)
+              }
+            })
+        }else{
+          $('.container').append("<div class='ct-got" + [i] + "'></div>")
+          var got = new Chartist.Bar('.ct-got' + [i], {
+            labels: [labelsName],
+            series: [
+              { name: "normal", data: [data[i].rujukanBawah] }
+            ],
+            target: data[i].result
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [0, data[i].rujukanBawah],
+                stretch: true,
+                // labelInterpolationFnc: function (value) {
+                //   return value.toFixed(1);
+                // }
+              },
+              axisY: {
+                offset: 100,
+              },
+              plugins: [
+                // Chartist.plugins.tooltip({
+                //   appendToBody: true,
+                //   pointClass: 'my-cool-point',
+                // }),
+                // Chartist.plugins.ctBarLabels()
+              ],
+            }).on('created', function () {
+              seriesIndex = -1;
+            }).on('draw', function (data) {
+              if (data.type === 'bar') {
+                data.element.attr({
+                  style: 'stroke-width: 30px'
+                })
+                data.element._node.onclick = () => {
+                  alert(data.value.x)
+                }
+                if (data.index === 0) {
+                  seriesIndex++;
+                }
+                var seriesName = got.data.series[seriesIndex].name;
+                data.element.root().elem('text', {
+                  x: data.x1,
+                  y: data.y2 + 5
+                }, 'ct-bar-label').text(seriesName)
+              }
+
+              if (data.type === 'label' && data.text === labelsName) {
+                console.log('ini data text', data.text)
+
+                let url = searchUrl + data.text.replace(' ', '_')
+                console.log(url)
+                loadJSON(url, gotContent, 'jsonp')
+
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover',
+                      delay: { "hide": 5000 }
+                    })
+                  })
+                }
+
+                for (let j = 0; j < got.data.series[0].data[0].meta; j++) {
+                  // console.log(i)
+                  if (j === got.data.target) {
+                    $(function () {
+                      $('.ct-bar').popover({
+                        container: 'body',
+                        placement: 'top',
+                        content: i,
+                        trigger: 'hover focus',
+                      })
+                    })
+                  } else {
+                    console.log('bukan target')
+                  }
+                }
+                // console.log(chart)
+              }
+            })
+        }
       }
-    })
-
-    function getStackTotals(seriesList) {
-      var stackTotals = [];
-      seriesList.forEach(function eachSeries(series) {
-        series.data.forEach(function eachData(value, valueIndex) {
-          stackTotals[valueIndex] = stackTotals[valueIndex] || 0;
-          stackTotals[valueIndex] += value;
-        });
-      });
-      return stackTotals;
     }
 
-    chart.on('data', function (context) {
-      var stackTotals = getStackTotals(context.data.series);
-      // console.log(stackTotals);
-      context.data.series.forEach(function eachSeries(series) {
-        series.data = series.data.map(function addStackTotalToMeta(value, valueIndex) {
-          return {
-            value: value,
-            meta: stackTotals[valueIndex]
-          };
-        });
-      });
-    });
 
-
-    // function clone(close) {
-    //   var c = new Chartist.Svg.Path(close || this.close)
-    //   c.pos = this.pos,
-    //     c.pathElements = this.pathElements.slice().map(function cloneElements(pathElement) {
-    //       return Chartist.extend({}, pathElement)
-    //     })
-    //   c.options = Chartist.extend({}, this.options);
-    //   return c
-    // }
 
   </script>
 </body>
