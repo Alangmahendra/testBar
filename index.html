@@ -266,8 +266,62 @@
                 }
               }
             })
-        } else {
+        }
+      } else if (data[i].kondisi === '') {
+        if (data[i].rujukanAtas === 0 && data[i].rujukanBawah === 0) {
+          $('.container').append("<div class='ct-loop" + [i] + "'></div>")
+          let chart = new Chartist.Bar('.ct-loop' + [i], {
+            labels: [labelsName],
+            series: [
+             [data[i].result]
+            ]
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [data[i].result],
+                stretch: true,
+              },
+              axisY: {
+                offset: 100,
+              },
+              // target:data[i].result
+            }).on('draw', function (context) {
+              if (context.type === 'bar') {
+                context.element.attr({
+                  style: 'stroke-width: 30px ; stroke:' + hijau + ';'
+                })
+                context.element._node.onclick = () => {
+                  alert(context.value.x)
+                }
+              };
 
+            }).on('draw', function (context) {
+              if (context.type === 'label' && context.text === labelsName) {
+
+                let url = searchUrl + context.text.replace(' ', '_')
+                console.log(url)
+                loadJSON(url, gotContent, 'jsonp')
+
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover',
+                      delay: { "hide": 5000 }
+                    })
+                  })
+                }
+              }
+            })
         }
       } else {
         if (data[i].result < data[i].rujukanAtas && data[i].result > data[i].rujukanBawah) {
@@ -378,77 +432,6 @@
                   // context.element.attr({
                   //   style: 'stroke-width: 30px ; stroke:' + hijau + ';'
                   // })
-                  context.element._node.onclick = () => {
-                    alert(context.value.x)
-                  }
-                };
-
-              }).on('draw', function (context) {
-                if (context.type === 'label' && context.text === labelsName) {
-
-                  let url = searchUrl + context.text.replace(' ', '_')
-                  console.log(url)
-                  loadJSON(url, gotContent, 'jsonp')
-
-                  function gotContent(data) {
-                    $(function () {
-                      var link = String(data[3][0])
-                      $('.ct-start').popover({
-                        container: 'body',
-                        placement: 'bottom',
-                        title: String(data[2][0]),
-                        html: true,
-                        content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-                        trigger: 'hover',
-                        delay: { "hide": 5000 }
-                      })
-                    })
-                  }
-                }
-              })
-          } else if (data[i].kondisi === '') {
-            $('.container').append("<div class='ct-loop" + [i] + "'></div>")
-            let chart = new Chartist.Bar('.ct-loop' + [i], {
-              labels: [labelsName],
-              series: [
-                [data[i].result],
-                [data[i].result]
-              ]
-            }, {
-                stackBars: true,
-                horizontalBars: true,
-                axisX: {
-                  showGrid: false,
-                  offset: 100,
-                  type: Chartist.FixedScaleAxis,
-                  ticks: [data[i].result],
-                  stretch: true,
-                },
-                axisY: {
-                  offset: 100,
-                },
-                // target:data[i].result
-              }).on('draw', function (context) {
-                if (context.type === 'bar') {
-                  console.log('>=', context)
-                  // if (result < context.axisX.ticks[1] && result > context.axisX.ticks[0]) {
-                  //   if (context.series[0] === atas) {
-                  //     context.element.attr({
-                  //       style: 'stroke-width: 30px ; stroke:' + hijau + ';'
-                  //     })
-                  //   } else if (context.series[0] > atas) {
-                  //     context.element.attr({
-                  //       style: 'stroke-width: 30px ; stroke:' + merah + ';'
-                  //     })
-                  //   }else{
-                  //     context.element.attr({
-                  //       style: 'stroke-width: 30px ; stroke:' + merah + ';'
-                  //     })
-                  //   }
-                  // }
-                  context.element.attr({
-                    style: 'stroke-width: 30px ; stroke:' + hijau + ';'
-                  })
                   context.element._node.onclick = () => {
                     alert(context.value.x)
                   }
