@@ -29,12 +29,12 @@
   <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
 
   <style>
-   .ct-end1 {
+    .ct-end1 {
       min-height: 50px;
       max-width: -50px;
       margin-top: -50px;
-      margin-top: -50px;
-      background-color: black;
+      /* background-image: url("./pinMerahMini.png"); */
+      background-color: grey
     }
   </style>
 </head>
@@ -126,12 +126,12 @@
                 context.element._node.onclick = () => {
                   alert(context.value.x)
                 }
-              } 
+              }
             }).on('draw', function (context) {
               if (context.type === 'label' && context.text === labelsName) {
 
                 let url = searchUrl + context.text.replace(' ', '_')
-                console.log(url)
+                // console.log(url)
                 loadJSON(url, gotContent, 'jsonp')
 
                 function gotContent(data) {
@@ -149,10 +149,10 @@
                   })
                 }
               }
-              if(context.type === 'label' && context.text === result){
-
+              if (context.type === 'label' && context.text === result) {
+                  console.log(SVGForeignObjectElement)
               }
-              console.log(context.element._node)
+              // console.log(context.element._node)
             })
         } else {
           $('.container').append("<div class='ct-loop" + [i] + "'></div>")
@@ -191,7 +191,7 @@
               if (context.type === 'label' && context.text === labelsName) {
 
                 let url = searchUrl + context.text.replace(' ', '_')
-                console.log(url)
+                // console.log(url)
                 loadJSON(url, gotContent, 'jsonp')
 
                 function gotContent(data) {
@@ -218,7 +218,7 @@
             labels: [labelsName],
             series: [
               [data[i].result],
-              [data[i].rujukanBawah-data[i].result]
+              [data[i].rujukanBawah - data[i].result]
             ]
           }, {
               stackBars: true,
