@@ -27,6 +27,16 @@
   <script src="sketch.js"></script>
 
   <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
+
+  <style>
+   .ct-end1 {
+      min-height: 50px;
+      max-width: -50px;
+      margin-top: -50px;
+      margin-top: -50px;
+      background-color: black;
+    }
+  </style>
 </head>
 
 <body>
@@ -93,7 +103,7 @@
                 showGrid: false,
                 offset: 100,
                 type: Chartist.FixedScaleAxis,
-                ticks: [data[i].rujukanAtas],
+                ticks: [data[i].rujukanAtas, result],
                 stretch: true,
               },
               axisY: {
@@ -102,7 +112,6 @@
               // target:data[i].result
             }).on('draw', function (context) {
               if (context.type === 'bar') {
-                // console.log(context.axisX.chartRect.padding)
                 if (result > context.axisX.ticks[0]) {
                   if (context.series[0] === atas) {
                     context.element.attr({
@@ -117,7 +126,7 @@
                 context.element._node.onclick = () => {
                   alert(context.value.x)
                 }
-              };
+              } 
             }).on('draw', function (context) {
               if (context.type === 'label' && context.text === labelsName) {
 
@@ -140,6 +149,10 @@
                   })
                 }
               }
+              if(context.type === 'label' && context.text === result){
+
+              }
+              console.log(context.element._node)
             })
         } else {
           $('.container').append("<div class='ct-loop" + [i] + "'></div>")
@@ -204,8 +217,8 @@
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
-              [data[i].rujukanBawah - data[i].result],
-              [data[i].rujukanBawah]
+              [data[i].result],
+              [data[i].rujukanBawah-data[i].result]
             ]
           }, {
               stackBars: true,
@@ -225,13 +238,13 @@
               if (context.type === 'bar') {
                 // console.log('>=', context)
                 if (result < context.axisX.ticks[0]) {
-                  if (context.series[0] >= bawah) {
-                    context.element.attr({
-                      style: 'stroke-width: 30px ; stroke:' + hijau + ';'
-                    })
-                  } else if (context.series[0] <= bawah) {
+                  if (context.series[0] >= result) {
                     context.element.attr({
                       style: 'stroke-width: 30px ; stroke:' + merah + ';'
+                    })
+                  } else {
+                    context.element.attr({
+                      style: 'stroke-width: 30px ; stroke:' + hijau + ';'
                     })
                   }
                 }
@@ -273,7 +286,7 @@
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
-             [data[i].result]
+              [data[i].result]
             ]
           }, {
               stackBars: true,
