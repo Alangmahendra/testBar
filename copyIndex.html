@@ -29,25 +29,22 @@
   <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
 
   <style>
-    .ct-horizontal-bar{
+    .ct-horizontal-bar .ct-chart-bar{
       margin-bottom:-50px;
       padding: 0;
     }
     .ct-end1 {
       display: flex;
       margin: 0;
-      padding: 10px auto;
+      padding: 0;
       max-height: 32px;
       max-width: 32px;
-      margin-top: -40px;
-      /* background-image: url("./pinMerahMini.png"); */
-      /* background-color: grey; */
+      margin-top: -50px;
       background-image: url("tooltipResiko32.png");
-      justify-content:center;
+      justify-content: unsafe center;
       font-family:Arial, Helvetica, sans-serif;
       color: white;
-      font-weight: 400;
-      
+      font-weight: 500;
     }
   </style>
 </head>
@@ -55,8 +52,8 @@
 <body>
 
   <div class="container">
-    <div></div>
-    <div></div>
+    <div>klm</div>
+    <div>lkm</div>
   </div>
 
 
@@ -122,7 +119,6 @@
               axisY: {
                 offset: 100,
               },
-              // target:data[i].result
             }).on('draw', function (context) {
               if (context.type === 'bar') {
                 if (result > context.axisX.ticks[0]) {
