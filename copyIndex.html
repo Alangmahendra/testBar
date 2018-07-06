@@ -29,10 +29,11 @@
   <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
 
   <style>
-    .ct-horizontal-bar .ct-chart-bar{
-      margin-bottom:-50px;
+    .ct-horizontal-bar .ct-chart-bar {
+      margin-bottom: -50px;
       padding: 0;
     }
+
     .ct-end1 {
       display: flex;
       margin: 0;
@@ -42,7 +43,21 @@
       margin-top: -50px;
       background-image: url("tooltipResiko32.png");
       justify-content: unsafe center;
-      font-family:Arial, Helvetica, sans-serif;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+      font-weight: 500;
+    }
+
+    .ct-end2 {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      max-height: 32px;
+      max-width: 32px;
+      margin-top: -50px;
+      background-image: url("tooltipNormal32.png");
+      justify-content: unsafe center;
+      font-family: Arial, Helvetica, sans-serif;
       color: white;
       font-weight: 500;
     }
@@ -177,7 +192,7 @@
                 showGrid: false,
                 offset: 100,
                 type: Chartist.FixedScaleAxis,
-                ticks: [data[i].rujukanAtas],
+                ticks: [result, data[i].rujukanAtas],
                 stretch: true,
               },
               axisY: {
@@ -217,7 +232,10 @@
                   })
                 }
               }
-            })
+              if (context.type === 'label' && context.text === result) {
+                $('span:last').removeClass('ct-end').addClass('ct-end2')
+              }
+           })
         }
       } else if (data[i].kondisi === '>=') {
         if (data[i].result < data[i].rujukanBawah) {
@@ -225,8 +243,8 @@
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
-              [data[i].result],
-              [data[i].rujukanBawah - data[i].result]
+              [data[i].result + (bawah-result-1)],
+              [1]
             ]
           }, {
               stackBars: true,
@@ -235,7 +253,7 @@
                 showGrid: false,
                 offset: 100,
                 type: Chartist.FixedScaleAxis,
-                ticks: [data[i].rujukanBawah],
+                ticks: [result,data[i].rujukanBawah],
                 stretch: true,
               },
               axisY: {
@@ -246,7 +264,7 @@
               if (context.type === 'bar') {
                 // console.log('>=', context)
                 if (result < context.axisX.ticks[0]) {
-                  if (context.series[0] >= result) {
+                  if (context.series[0]!==1) {
                     context.element.attr({
                       style: 'stroke-width: 30px ; stroke:' + merah + ';'
                     })
@@ -256,9 +274,9 @@
                     })
                   }
                 }
-                // context.element.attr({
-                //   style: 'stroke-width: 30px ; stroke:' + hijau + ';'
-                // })
+                context.element.attr({
+                  style: 'stroke-width: 30px ;'
+                })
                 context.element._node.onclick = () => {
                   alert(context.value.x)
                 }
@@ -285,6 +303,9 @@
                     })
                   })
                 }
+              }
+              if (context.type === 'label' && context.text === result) {
+                $('span:last').removeClass('ct-end').addClass('ct-end1')
               }
             })
         }
@@ -341,6 +362,9 @@
                     })
                   })
                 }
+              }
+              if (context.type === 'label' && context.text === result) {
+                $('span:last').removeClass('ct-end').addClass('ct-end2')
               }
             })
         }
