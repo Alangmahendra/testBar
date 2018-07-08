@@ -29,9 +29,9 @@
   <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
 
   <style>
-    .ct-horizontal-bar .ct-chart-bar {
-      margin-bottom: -50px;
-      padding: 0;
+    * .ct-horizontal-bars .ct-chart-bar {
+      margin-bottom: -100px;
+      padding: -100px;
     }
 
     .ct-end1 {
@@ -40,12 +40,13 @@
       padding: 0;
       max-height: 32px;
       max-width: 32px;
-      margin-top: -50px;
+      margin-top: -60px;
       background-image: url("tooltipResiko32.png");
       justify-content: unsafe center;
       font-family: Arial, Helvetica, sans-serif;
       color: white;
       font-weight: 500;
+      position: absolute;
     }
 
     .ct-end2 {
@@ -54,12 +55,13 @@
       padding: 0;
       max-height: 32px;
       max-width: 32px;
-      margin-top: -50px;
+      margin-top: -60px;
       background-image: url("tooltipNormal32.png");
       justify-content: unsafe center;
       font-family: Arial, Helvetica, sans-serif;
       color: white;
       font-weight: 500;
+      position: absolute;
     }
   </style>
 </head>
@@ -99,8 +101,6 @@
       { test: "eLFG (CKDP-EPI)", result: 76, rujukanBawah: 0, rujukanAtas: 0, kondisi: '' },
       { test: "Asam Urat", result: 5.1, rujukanBawah: 0, rujukanAtas: 7, kondisi: '<' }
     ]
-
-
 
     for (let i = 0; i < data.length; i++) {
 
@@ -286,7 +286,7 @@
               if (context.type === 'label' && context.text === labelsName) {
 
                 let url = searchUrl + context.text.replace(' ', '_')
-                console.log(url)
+                // console.log(url)
                 loadJSON(url, gotContent, 'jsonp')
 
                 function gotContent(data) {
@@ -385,7 +385,7 @@
                 showGrid: false,
                 offset: 100,
                 type: Chartist.FixedScaleAxis,
-                ticks: [data[i].rujukanBawah, data[i].rujukanAtas],
+                ticks: [data[i].rujukanBawah, data[i].rujukanAtas, result],
                 stretch: true,
               },
               axisY: {
@@ -394,7 +394,8 @@
               // target:data[i].result
             }).on('draw', function (context) {
               if (context.type === 'bar') {
-                if (result < context.axisX.ticks[1] && result > context.axisX.ticks[0]) {
+                if (result < context.axisX.ticks[2] && result > context.axisX.ticks[0]) {
+                  console.log("==>",context.element._node)
                   if (context.series[0] === (atas - bawah)) {
                     context.element.attr({
                       style: 'stroke-width: 30px ; stroke:' + hijau + ';'
@@ -435,6 +436,9 @@
                   })
                 }
               }
+              if (context.type === 'label' && context.text === result) {
+                $('span:last').removeClass('ct-end').addClass('ct-end2')
+              }
             })
         } else {
           if (data[i].result > atas) {
@@ -453,7 +457,7 @@
                   showGrid: false,
                   offset: 100,
                   type: Chartist.FixedScaleAxis,
-                  ticks: [data[i].rujukanBawah, data[i].rujukanAtas],
+                  ticks: [data[i].rujukanBawah, data[i].rujukanAtas,result],
                   stretch: true,
                 },
                 axisY: {
@@ -504,6 +508,9 @@
                     })
                   }
                 }
+                if (context.type === 'label' && context.text === result) {
+                $('span:last').removeClass('ct-end').addClass('ct-end1')
+              }
               })
           }
         }
