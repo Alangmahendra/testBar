@@ -40,12 +40,12 @@
       padding: 0;
       max-height: 32px;
       max-width: 32px;
-      margin-top: -60px;
+      margin-top: -45px;
       background-image: url("tooltipResiko32.png");
       justify-content: unsafe center;
       font-family: Arial, Helvetica, sans-serif;
       color: white;
-      font-weight: 500;
+      font-weight: bold;
       position: absolute;
     }
 
@@ -55,13 +55,17 @@
       padding: 0;
       max-height: 32px;
       max-width: 32px;
-      margin-top: -60px;
+      margin-top: -45px;
       background-image: url("tooltipNormal32.png");
       justify-content: unsafe center;
       font-family: Arial, Helvetica, sans-serif;
       color: white;
-      font-weight: 500;
+      font-weight: bold;
       position: absolute;
+    }
+
+    .ct-ticks {
+      color: black;
     }
   </style>
 </head>
@@ -109,8 +113,8 @@
       let result = data[i].result
       let bawah = data[i].rujukanBawah
       let atas = data[i].rujukanAtas
-      var merah = '#ff0000'
-      var hijau = '#3cff00'
+      var merah = '#cc0000'
+      var hijau = '#00ce99'
 
       if (data[i].kondisi === '<') {
         if (data[i].result > data[i].rujukanAtas) {
@@ -167,14 +171,16 @@
                       title: String(data[2][0]),
                       html: true,
                       content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-                      trigger: 'hover',
-                      delay: { "hide": 5000 }
+                      trigger: 'hover click',
+                     
                     })
                   })
                 }
               }
               if (context.type === 'label' && context.text === result) {
                 $('span:last').removeClass('ct-end').addClass('ct-end1')
+              } else if (context.type === 'label' && context.text !== result) {
+                $('span:last').addClass('ct-ticks')
               }
             })
         } else {
@@ -182,8 +188,8 @@
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
-
-              [data[i].rujukanAtas]
+              [data[i].rujukanAtas],
+              [data[i].rujukanAtas + 1]
             ]
           }, {
               stackBars: true,
@@ -201,10 +207,15 @@
               // target:data[i].result
             }).on('draw', function (context) {
               if (context.type === 'bar') {
-                // console.log(data)
-                context.element.attr({
-                  style: 'stroke-width: 30px ; stroke:' + hijau + ';'
-                })
+                if (context.series[0] === atas) {
+                  context.element.attr({
+                    style: 'stroke-width: 30px ; stroke:' + hijau + ';'
+                  })
+                } else {
+                  context.element.attr({
+                    style: 'stroke-width: 30px ; stroke:' + merah + ';'
+                  })
+                }
                 context.element._node.onclick = () => {
                   alert(context.value.x)
                 }
@@ -226,16 +237,18 @@
                       title: String(data[2][0]),
                       html: true,
                       content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-                      trigger: 'hover',
-                      delay: { "hide": 5000 }
+                      trigger: 'hover click',
+                     
                     })
                   })
                 }
               }
               if (context.type === 'label' && context.text === result) {
                 $('span:last').removeClass('ct-end').addClass('ct-end2')
+              } else if (context.type === 'label' && context.text !== result) {
+                $('span:last').addClass('ct-ticks')
               }
-           })
+            })
         }
       } else if (data[i].kondisi === '>=') {
         if (data[i].result < data[i].rujukanBawah) {
@@ -243,7 +256,7 @@
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
-              [data[i].result + (bawah-result-1)],
+              [data[i].result + (bawah - result - 1)],
               [1]
             ]
           }, {
@@ -253,7 +266,7 @@
                 showGrid: false,
                 offset: 100,
                 type: Chartist.FixedScaleAxis,
-                ticks: [result,data[i].rujukanBawah],
+                ticks: [result, data[i].rujukanBawah],
                 stretch: true,
               },
               axisY: {
@@ -263,8 +276,8 @@
             }).on('draw', function (context) {
               if (context.type === 'bar') {
                 // console.log('>=', context)
-                if (result < context.axisX.ticks[0]) {
-                  if (context.series[0]!==1) {
+                if (result < context.axisX.ticks[1]) {
+                  if (context.series[0] !== 1) {
                     context.element.attr({
                       style: 'stroke-width: 30px ; stroke:' + merah + ';'
                     })
@@ -274,9 +287,9 @@
                     })
                   }
                 }
-                context.element.attr({
-                  style: 'stroke-width: 30px ;'
-                })
+                // context.element.attr({
+                //   style: 'stroke-width: 30px ;'
+                // })
                 context.element._node.onclick = () => {
                   alert(context.value.x)
                 }
@@ -298,14 +311,16 @@
                       title: String(data[2][0]),
                       html: true,
                       content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-                      trigger: 'hover',
-                      delay: { "hide": 5000 }
+                      trigger: 'hover click',
+                     
                     })
                   })
                 }
               }
               if (context.type === 'label' && context.text === result) {
                 $('span:last').removeClass('ct-end').addClass('ct-end1')
+              } else if (context.type === 'label' && context.text !== result) {
+                $('span:last').addClass('ct-ticks')
               }
             })
         }
@@ -340,7 +355,7 @@
                   alert(context.value.x)
                 }
               };
-
+              console.log('==>',data[i].test)
             }).on('draw', function (context) {
               if (context.type === 'label' && context.text === labelsName) {
 
@@ -357,14 +372,16 @@
                       title: String(data[2][0]),
                       html: true,
                       content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-                      trigger: 'hover',
-                      delay: { "hide": 5000 }
+                      trigger: 'hover click',
+                     
                     })
                   })
                 }
               }
               if (context.type === 'label' && context.text === result) {
                 $('span:last').removeClass('ct-end').addClass('ct-end2')
+              } else if (context.type === 'label' && context.text !== result) {
+                $('span:last').addClass('ct-ticks')
               }
             })
         }
@@ -395,7 +412,7 @@
             }).on('draw', function (context) {
               if (context.type === 'bar') {
                 if (result < context.axisX.ticks[2] && result > context.axisX.ticks[0]) {
-                  console.log("==>",context.element._node)
+                  console.log("==>", context.element._node)
                   if (context.series[0] === (atas - bawah)) {
                     context.element.attr({
                       style: 'stroke-width: 30px ; stroke:' + hijau + ';'
@@ -430,14 +447,16 @@
                       title: String(data[2][0]),
                       html: true,
                       content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-                      trigger: 'hover',
-                      delay: { "hide": 5000 }
+                      trigger: 'hover click',
+                     
                     })
                   })
                 }
               }
               if (context.type === 'label' && context.text === result) {
                 $('span:last').removeClass('ct-end').addClass('ct-end2')
+              } else if (context.type === 'label' && context.text !== result) {
+                $('span:last').addClass('ct-ticks')
               }
             })
         } else {
@@ -457,7 +476,7 @@
                   showGrid: false,
                   offset: 100,
                   type: Chartist.FixedScaleAxis,
-                  ticks: [data[i].rujukanBawah, data[i].rujukanAtas,result],
+                  ticks: [data[i].rujukanBawah, data[i].rujukanAtas, result],
                   stretch: true,
                 },
                 axisY: {
@@ -502,15 +521,17 @@
                         title: String(data[2][0]),
                         html: true,
                         content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
-                        trigger: 'hover',
-                        delay: { "hide": 5000 }
+                        trigger: 'hover click',
+                       
                       })
                     })
                   }
                 }
                 if (context.type === 'label' && context.text === result) {
-                $('span:last').removeClass('ct-end').addClass('ct-end1')
-              }
+                  $('span:last').removeClass('ct-end').addClass('ct-end1')
+                } else if (context.type === 'label' && context.text !== result) {
+                  $('span:last').addClass('ct-ticks')
+                }
               })
           }
         }
