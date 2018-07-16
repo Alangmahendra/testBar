@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.css">
+  <script src="http://cdn.jsdelivr.net/chartist.js/latest/chartist.min.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <title>Document</title>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="bower_components/chartist/dist/chartist.css">
+
+  <script src="libraries/p5.js"></script>
+  <script src="libraries/p5.dom.js"></script>
+  <script src="libraries/p5.sound.js"></script>
+  <script src="sketch.js"></script>
+
+  <link rel="stylesheet" href="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.css">
+
+  <style>
+    .ct-horizontal-bars.ct-chart-bar {
+      margin-bottom: -10px;
+      padding-bottom: -10px;
+    }
+
+    .ct-label.ct-vertical.ct-vertical{
+      width:110px
+    }
+
+    .ct-end1 {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      max-height: 32px;
+      max-width: 32px;
+      margin-top: -45px;
+      background-image: url("tooltipResiko32.png");
+      justify-content: unsafe center;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+      font-weight: bold;
+      position: absolute;
+    }
+
+    .ct-end2 {
+      display: flex;
+      margin: 0;
+      padding: 0;
+      max-height: 32px;
+      max-width: 32px;
+      margin-top: -45px;
+      background-image: url("tooltipNormal32.png");
+      justify-content: unsafe center;
+      font-family: Arial, Helvetica, sans-serif;
+      color: white;
+      font-weight: bold;
+      position: absolute;
+    }
+
+    .ct-ticks {
+      color: black;
+    }
+
+    .ct-start {
+      padding-right: 200px;
+      z-index: 1000000;
+    }
+    .container{
+      z-index: -100000000000;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="tampung">
+    <div>klm</div>
+    <div>lkm</div>
+  </div>
+
+
+  <script src="bower_components/chartist/dist/chartist.min.js"></script>
+  <script src="bower_components/chartist/bower_components/chartist-plugin-tooltip/dist/chartist-plugin-tooltip.js"></script>
+  <script src="chartist-bar-labels.js"></script>
+  <script>
+
+    let searchUrl = "https://id.wikipedia.org/w/api.php?action=opensearch&format=json&search="
+    let contentUrl = "https://id.wikipedia.org/w/api.php?action=query&prop=revision&rvprop=content&format=json&titles="
+
+
+    // let seriesIndex = -1
+
+    var data = [
+      { test: "GOT", result: 44, rujukanBawah: 0, rujukanAtas: 33, kondisi: '<' },
+      { test: "GPT", result: 38, rujukanBawah: 0, rujukanAtas: 50, kondisi: '<' },
+      { test: "Gamma GT", result: 15, rujukanBawah: 0, rujukanAtas: 66, kondisi: '<' },
+      { test: "Fostfatase Alkali", result: 93, rujukanBawah: 53, rujukanAtas: 128, kondisi: '-' },
+      { test: "Cholesterol Total", result: 185, rujukanBawah: 0, rujukanAtas: 200, kondisi: '<' },
+      { test: "Cholesterol LDL Direk", result: 151, rujukanBawah: 0, rujukanAtas: 100, kondisi: '<' },
+      { test: "Cholesterol HDL", result: 34, rujukanBawah: 40, rujukanAtas: 0, kondisi: '>=' },
+      { test: "Trigliserida", result: 62, rujukanBawah: 0, rujukanAtas: 150, kondisi: '<' },
+      { test: "Urea N", result: 14, rujukanBawah: 6, rujukanAtas: 20, kondisi: '-' },
+      { test: "Ureum", result: 30, rujukanBawah: 13, rujukanAtas: 43, kondisi: '-' },
+      { test: "Kreatinin", result: 1.21, rujukanBawah: 0.70, rujukanAtas: 1.20, kondisi: '-' },
+      { test: "eLFG (CKDP-EPI)", result: 76, rujukanBawah: 0, rujukanAtas: 0, kondisi: '' },
+      { test: "Asam Urat", result: 5.1, rujukanBawah: 0, rujukanAtas: 7, kondisi: '<' }
+    ]
+
+    var hijau = '#66999a';
+    var merah = '#336667';
+    data.map(function (loop, i) {
+      let addAppend = $("<div class='ct-loop" + [i] + "' style='margin-bottom:-50px;align:right;display:flex;justifyy-content:space-between'></div>")
+      if (loop.kondisi === '<') {
+        if (loop.result > loop.rujukanAtas) {
+          $(".tampung").append(addAppend)
+          let chart = new Chartist.Bar('.ct-loop' + [i], {
+            labels: [loop.test],
+            series: [
+              [loop.rujukanAtas],
+              [loop.rujukanAtas + 1]
+            ]
+          }, {
+              stackBars: true,
+              horizontalBars: true,
+              axisX: {
+                showGrid: false,
+                offset: 100,
+                type: Chartist.FixedScaleAxis,
+                ticks: [loop.rujukanAtas, loop.result],
+                stretch: true,
+              },
+              axisY: {
+                offset: 340,
+              }
+            }).on('draw', function (context) {
+              context.element._node.farthestViewportElement.clientHeight - 100
+              // console.log(svgHight)
+              if (context.type == 'bar') {
+                if (context.series[0] === loop.rujukanAtas) {
+                  context.element.attr({
+                    style: 'stroke-width: 30px ; stroke:' + hijau + ';'
+                  })
+                } else {
+                  context.element.attr({
+                    style: 'stroke-width: 30px ; stroke:' + merah + ';'
+                  })
+                }
+              }
+              console.log( context.element)
+              if (context.type == 'label' && context.text === String) {
+                let url = searchUrl + context.text.replace(/\s+/g, '_')
+                loadJSON(url, gotContent, 'jsonp')
+                console.log(context.text)
+                function gotContent(data) {
+                  $(function () {
+                    var link = String(data[3][0])
+                    $('.ct-start').popover({
+                      container: 'body',
+                      placement: 'bottom',
+                      title: String(data[2][0]),
+                      html: true,
+                      content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
+                      trigger: 'hover click',
+                    })
+                  })
+                }
+              } if (context.type === 'label' && context.text === loop.result) {
+                $('span:last').removeClass('ct-end').addClass('ct-end1')
+              } else if (context.type === 'label' && context.text !== loop.result) {
+                $('span:last').addClass('ct-ticks')
+              }
+            })
+        } else {
+          
+        }
+      } else if (loop.kondisi === '-') {
+        if (loop.result > loop.rujukanBawah && loop.result < loop.rujukanAtas) {
+
+        } else {
+
+        }
+      }
+    })
+
+  </script>
+</body>
+
+</html>

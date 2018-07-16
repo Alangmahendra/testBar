@@ -67,12 +67,17 @@
     .ct-ticks {
       color: black;
     }
+
+    .ct-start {
+      padding-right: 200px;
+      z-index: 1000000;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="container">
+  <div class="tampung">
     <div>klm</div>
     <div>lkm</div>
   </div>
@@ -120,7 +125,7 @@
       if (data[i].kondisi === '<') {
         if (data[i].result > data[i].rujukanAtas) {
           
-          $('.container').append("<div class='ct-loop" + [i] + "'></div>")
+          $('.tampung').append("<div class='ct-loop" + [i] + "'></div>")
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
@@ -138,7 +143,7 @@
                 stretch: true,
               },
               axisY: {
-                offset: 100,
+                offset: 340,
               },
             }).on('draw', function (context) {
               if (context.type === 'bar') {
@@ -186,7 +191,7 @@
               }
             })
         } else {
-          $('.container').append("<div class='ct-loop" + [i] + "'></div>")
+          $('.tampung').append("<div class='ct-loop" + [i] + "'></div>")
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
@@ -204,7 +209,7 @@
                 stretch: true,
               },
               axisY: {
-                offset: 100,
+                offset: 340,
               },
               // target:data[i].result
             }).on('draw', function (context) {
@@ -254,7 +259,7 @@
         }
       } else if (data[i].kondisi === '>=') {
         if (data[i].result < data[i].rujukanBawah) {
-          $('.container').append("<div class='ct-loop" + [i] + "'></div>")
+          $('.tampung').append("<div class='ct-loop" + [i] + "'></div>")
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
@@ -272,7 +277,7 @@
                 stretch: true,
               },
               axisY: {
-                offset: 100,
+                offset: 340,
               },
               // target:data[i].result
             }).on('draw', function (context) {
@@ -328,7 +333,7 @@
         }
       } else if (data[i].kondisi === '') {
         if (data[i].rujukanAtas === 0 && data[i].rujukanBawah === 0) {
-          $('.container').append("<div class='ct-loop" + [i] + "'></div>")
+          $('.tampung').append("<div class='ct-loop" + [i] + "'></div>")
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
@@ -345,7 +350,7 @@
                 stretch: true,
               },
               axisY: {
-                offset: 100,
+                offset: 340,
               },
               // target:data[i].result
             }).on('draw', function (context) {
@@ -389,7 +394,7 @@
         }
       } else {
         if (data[i].result < data[i].rujukanAtas && data[i].result > data[i].rujukanBawah) {
-          $('.container').append("<div class='ct-loop" + [i] + "'></div>")
+          $('.tampung').append("<div class='ct-loop" + [i] + "'></div>")
           let chart = new Chartist.Bar('.ct-loop' + [i], {
             labels: [labelsName],
             series: [
@@ -408,7 +413,7 @@
                 stretch: true,
               },
               axisY: {
-                offset: 100,
+                offset: 340,
               },
               // target:data[i].result
             }).on('draw', function (context) {
@@ -463,7 +468,7 @@
             })
         } else {
           if (data[i].result > atas) {
-            $('.container').append("<div class='ct-loop" + [i] + "'></div>")
+            $('.tampung').append("<div class='ct-loop" + [i] + "'></div>")
             let chart = new Chartist.Bar('.ct-loop' + [i], {
               labels: [labelsName],
               series: [
@@ -482,7 +487,7 @@
                   stretch: true,
                 },
                 axisY: {
-                  offset: 100,
+                  offset: 340,
                 },
                 // target:data[i].result
               }).on('draw', function (context) {
