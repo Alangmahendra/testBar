@@ -30,8 +30,9 @@
 
   <style>
     .ct-horizontal-bars.ct-chart-bar {
-      margin-bottom: -10px;
-      padding-bottom: -10px;
+      margin-top: 40px;
+      margin-bottom: 40px;
+      /* padding-bottom: 40px; */
     }
 
     .ct-label.ct-vertical.ct-vertical{
@@ -74,7 +75,6 @@
 
     .ct-start {
       padding-right: 200px;
-      z-index: 1000000;
     }
     .container{
       z-index: -100000000000;
@@ -144,7 +144,6 @@
                 offset: 340,
               }
             }).on('draw', function (context) {
-              context.element._node.farthestViewportElement.clientHeight - 100
               // console.log(svgHight)
               if (context.type == 'bar') {
                 if (context.series[0] === loop.rujukanAtas) {
@@ -157,7 +156,8 @@
                   })
                 }
               }
-              console.log( context.element)
+              context.element._node.farthestViewportElement
+              console.log(context.element)
               if (context.type == 'label' && context.text === String) {
                 let url = searchUrl + context.text.replace(/\s+/g, '_')
                 loadJSON(url, gotContent, 'jsonp')

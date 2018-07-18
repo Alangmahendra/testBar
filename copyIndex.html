@@ -174,7 +174,7 @@
                     $('.ct-start').popover({
                       container: 'body',
                       placement: 'bottom',
-                      title: String(data[2][0]),
+                      title: String(data[2][0])+' <button type="button" id="close" class="close" onclick="$(&quot;#example&quot;).popover(&quot;hide&quot;);">&times;</button>',
                       html: true,
                       content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
                       trigger: 'hover click',
@@ -241,7 +241,7 @@
                     $('.ct-start').popover({
                       container: 'body',
                       placement: 'bottom',
-                      title: String(data[2][0]),
+                      title: String(data[2][0])+' <button type="button" id="close" class="close" onclick="$(&quot;.ct-start&quot;).popover(&quot;hide&quot;);">&times;</button>',
                       html: true,
                       content: "<a target='_blank' href='" + link + "'>Wikipedia</a>",
                       trigger: 'hover click',
